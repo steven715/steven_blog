@@ -15,7 +15,7 @@
 
 Concepts for describing specific problems include
 
-- phenomena: 
+- phenomena: 用戶關心、可描述的事實
 - problem context 
 - problem domain 
 - solution domain (machine)
@@ -41,11 +41,39 @@ Concepts for describing specific problems include
 
 ## Describing problems
 
+### The problem context
+
+問題分析(problem analysis)中認為軟體應用(software application)是一種軟體機器(software machine)，軟體開發專案目標是改變問題邊界(problem context)透過建立軟體機器到問題邊界裡，以達到預期的效果。
+
+- Application domain: 再問題邊界(problem context)下，除了軟體機器(machine)外的其他部分，這部分是形成(form)問題邊界(problem context)。
+
+### The context diagram
+
+A domain is simply a part of the real world that we are interested in. It consists of **phenomena**
+
+- individuals: 表演票、場次、表演
+- event: 買票、看有哪些空座位
+- states of affeirs: 座位被訂走、空閒
+- relationships: 票跟座位再加上那一天是綁定的 (同一時段只能有一個座位跟一張票)
+- behaviors: 開演10分鐘後不再售票
+
+A domain interface is an area where domains connect and communicate. An interface is a place where domains partially overlap, so that phenomena in the interface are **shared phenomena** - they exist in both of the overlapping domains.
+
+- 觀眾買了A3的票:
+  - 觀眾: 點了螢幕上的座位
+  - 售票系統(domain): 識別座位是A3
+
+### Problem diagram
+
+
+
 
 
 ## 個人理解
 
-- 假設用戶想要賣他們表演票，那賣表演票是他的需求，而賣表演票這件事能夠被我拆解成以下幾件事
+- 一個現實的問題，我想要賣一疊表演票
+- 問題邊界(context): 真實世界已經有的部分，以及這些部分有什麼樣的現象，觀眾選擇場次、表演時間、表演等
+- 形成(form): 這個問題邊界所擁有的規則、條件，表演票的使用時間、表演票如何被移轉、座位如何被使用
   
 ## wiki
 
