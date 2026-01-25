@@ -6,7 +6,7 @@
 
 底層邏輯是為了電腦軟體(computer software)收集需求(gathering requirements)並決定實作框架(creating specifications)
 
-- 最好的需求分析是透過平行過程(through a process of parallel)，解偶用戶的需求(decomposition of user requirements)
+- 最好的需求分析是透過平行過程(through a process of parallel)，解藕用戶的需求(decomposition of user requirements)
 - 用戶的需求只關心軟體與真實世界的關係(relationships in the read world)，翻譯成專業術語就是 **application domain** ，他們不關心軟體系統是如何組成或是有什麼接口等
 
 ## Three sets of conceptual tools
