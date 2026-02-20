@@ -1,23 +1,27 @@
-# AI Coding原則
+# AI Coding 使用技巧
 
-1. 對話盡可能透過以下模式引導AI
-   1. What: 專案是什麼、問題是什麼 (CLAUDE.md)
-   2. Context: 當前的情境，有什麼限制 (Context, Rules)
-   3. Who: 誰來做，專職任務的專家 (Agent)
-   4. How: 具體怎麼做 (Skill)
-2. 需要做不同新任務，開啟一個新的對話，保護token數量
-
-## 功能模塊
-
-- CLAUDE.md: 專案核心，讓AI理解這個專案
-- Rule: 讓AI一定要遵守的部分
-- Agents: 負責專職任務，例: 負責**code review**, 檢查**coding style**
-  - Sub-agent: AI實際開啟獨立對話來處理對應的專職任務
-- Skills: 參考手冊，指導AI該怎麼做的標準流程
-- Commands: 將一整套SOP指令封裝成一個指令
-- Hooks: 事件鉤子
-- Contexts: 情境模式，目前有三種可參考，**dev**、**review**、**research**
+1. *CLAUDE.md* 是專案的核心，除了透過一開始的*init*指令產出的內容外，應該涵蓋以下幾點
+   1. 代碼規範
+   2. 技術棧
+   3. 專案結構
+   4. 每次應該做的事
+   5. 每次不應該做的事
+2. 每當AI犯錯，就讓它將錯誤更新到*CLAUDE.md*，避免再犯
+3. *CLAUDE.md* 應該保持*精簡內容*、並*持續更新*，內容大小應控制在 2.5K tokens 左右，官方有提供[API](https://platform.claude.com/docs/en/build-with-claude/token-counting)來測量
+4. 要求AI編寫測試，並依據領域的不同，有多樣化的驗證手段(前端、後端、手機端等)
+5. 需要做不同新任務，進行新功能或是除錯，開啟新對話，保護上下文邊界
+6. MCP 靈活使用，可以連接telegram讓AI執行完任務後回報到tg上，實現遠程操控，或是讓AI輸出到Notion進行項目追蹤
+7. 將重複性的工作讓AI整理成*commands*
+8. 隔離不同類型任務，*code review*、*design solution*、*refactor*、*implement code*，這些都應該由各自的agent操作
+9. 進行重要任務，可以改用*Plan Mode*，避免AI直接改代碼
+10. 養成「先計畫、後執行、必驗證」，AI生產的代碼，人還是要經過檢核跟理解
+11. *SKILL*可以透過AI生成，完成一次複雜任務後，跟AI說「將我們剛才的操作存為一個新技能」
+12. 利用關鍵字觸發特定技能或是MCP工具
+13. 利用*Hook*，可以指定AI開始前跟開始後做特定行為，像是讓AI每次寫完代碼做*Format*的動作，保持可讀性
+14. 針對AI的個人偏好使用，可以讓AI記憶起來，它會存到專案下的一個*MEMORY.md*
 
 ## 參考資料
 
+[那些 Agent 神文没告诉你的事：照着做，系统只会更烂 【AI agent 搭建实操指南】](https://youtu.be/b_9D7T0n4RA?list=TLGGtH-HmxCStmIyMDAyMjAyNg)
+[Claude Code's Creator Does This Before Every Single Project](https://youtu.be/B-UXpneKw6M?list=TLGGyrZG6_oOcgMyMDAyMjAyNg)
 [everything-claude-code](https://github.com/affaan-m/everything-claude-code?tab=readme-ov-file)
