@@ -6,6 +6,9 @@
 
 ```
 KnowledgeSystem/
+├── TODO.md                              # 待調整清單：第一版體檢結果與執行順序
+├── skills/                              # 程序性 skill 層：可觸發的 workflow
+│   └── start-cpp-project/SKILL.md       # 綠地 C++ 專案 + CLAUDE.md 生成
 ├── principles.md                        # 工程信念：不隨專案變化的價值判斷
 ├── standards/                           # 工程標準：跨專案適用的可執行規則
 │   ├── code-quality.md
@@ -52,6 +55,15 @@ KnowledgeSystem/
 @path/to/KnowledgeSystem/standards/testing.md
 @path/to/KnowledgeSystem/project-conventions/languages/cpp/conventions.md
 ```
+
+## skills 層
+
+`skills/` 是「動詞」——可被 Claude 自動觸發的程序性 workflow。
+其餘層級（principles / standards / project-conventions / templates）是「名詞」——skill 引用的工程標準。
+
+與通用工具（Superpowers / agent-skills）的分工：本體系不重做 TDD / brainstorm / review 等通用 workflow，只提供領域知識與少數領域 skill。通用引擎跑在本體系產出的 CLAUDE.md 之上，於是對著自己的標準執行。
+
+> 打包成 Claude Code plugin 對外發佈的部分暫緩，待 `TODO.md` 的調整完成後再處理。
 
 ## 演進原則
 
