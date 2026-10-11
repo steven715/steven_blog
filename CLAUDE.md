@@ -12,7 +12,7 @@ This is a personal knowledge base / blog repository. It contains pure Markdown a
 - **AI/** — AI and coding methodology notes
 - **c++/** — C++ technical notes (data synchronization, lock strategies)
 - **java/** — Java learning notes
-- **Software/** — Software design principles, including the Architecture Playbook
+- **Software/** — Software design principles and the thread-model notes (`thread-model-notes.md`, a personal memo, not a spec for AI)
 - **Linux核心/** — Linux kernel knowledge
 - **leetcode/** — LeetCode problem solutions
 - **Netwrok/** — Network/VM notes
@@ -26,19 +26,6 @@ This is a personal knowledge base / blog repository. It contains pure Markdown a
 - Content is written in **Traditional Chinese** (繁體中文), except diary entries which are in **English**
 - Diary filenames follow: `diary_YYYY_MM_DD.md`
 - Technical articles use `#` for title, `##` for sections, with code blocks where appropriate
-
-## Custom Skills
-
-- `/architect [業務場景描述]` — Generates system architecture designs based on the Architecture Playbook (`Software/architect-playbook.md`). Outputs: system definition, object inventory (Business/Model/Data objects), communication design, threading model, and business flow.
-
-## Architecture Playbook Key Concepts
-
-The playbook (referenced by the architect skill) defines three object types:
-1. **Business Objects** (Calculator, Handler, Manager, Controller) — business logic
-2. **Model Objects** (Updater, DTO) — data read/write responsibility
-3. **Data Objects** — anemic models, field definitions only
-
-Objects communicate via Model Object interfaces with event callbacks. Multi-threading uses independent preparation threads with pointer-based atomic updates under write locks.
 
 ## Git Conventions
 
