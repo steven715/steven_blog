@@ -1,40 +1,46 @@
 # AI Coding 使用技巧
 
-1. *CLAUDE.md* 是專案的核心，除了透過一開始的*init*指令產出的內容外，應該涵蓋以下幾點
-   1. 代碼規範
-   2. 技術棧
-   3. 專案結構
-   4. 每次應該做的事
-   5. 每次不應該做的事
-2. 每當AI犯錯，就讓它將錯誤更新到*CLAUDE.md*，避免再犯
-3. *CLAUDE.md* 應該保持*精簡內容*、並*持續更新*，內容大小應控制在 2.5K tokens 左右(大約 200 行內)，官方有提供[API](https://platform.claude.com/docs/en/build-with-claude/token-counting)來測量
-4. 要求AI編寫測試，並依據領域的不同，有多樣化的驗證手段(前端、後端、手機端等)
-5. 需要做不同新任務時，像開發新功能或是除錯，都開啟新對話或是清除對話緩存，保護上下文邊界
-6. MCP (Model Context Protocol) 能夠幫助AI與外部資源互動，像是可以連接telegram讓AI執行完任務後回報到tg上，實現遠程操控，或是讓AI輸出到Notion進行項目追蹤
-7. 重複性的工作讓AI整理成*commands*
-8. 隔離不同類型任務，*code review*、*design solution*、*refactor*、*implement code*，這些都應該由各自的agent操作
-9.  進行重要任務，可以改用*Plan Mode*，避免AI直接改代碼
-10. 養成「先計畫、後執行、必驗證」，AI生產的代碼，人需要對其內容進行檢核跟理解
-11. *SKILL*可以透過AI生成，完成一次複雜任務後，跟AI說「將我們剛才的操作存為一個新技能」
-12. *SKILL*中可以將更多的細節與選項放到*reference*下，同時也能在*scripts*放一些代碼讓AI執行，來產生與外部的溝通能力
-    1.  假設一個會議總結的SKILL，會有以下的目錄結構
-```
-meeting-summary/
-├── SKILL.md              ← 永久載入（Skill 主描述與指令）
-├── reference/
-│   ├── fiscal_policy.md  ← 按需載入（財政原則參考文件）
-│   └── statistics.md     ← 按需載入（統計原則參考文件）
-└── scripts/
-    └── upload.py         ← 按需載入（上傳/後處理腳本）
-```
-1.  利用關鍵字觸發特定技能或是MCP工具
-2.  利用*Hook*，可以指定AI開始前跟開始後做特定行為，像是讓AI每次寫完代碼做*Format*的動作，保持可讀性
-3.  針對AI的個人偏好使用，可以讓AI記憶起來，它會存到專案下的一個*MEMORY.md*
-4.  CLAUDE 有很多有用的插件，例如[Ralph Loop](https://github.com/anthropics/claude-plugins-official/tree/main/plugins/ralph-loop)很適合複雜大型任務
-5.  RAG (Retrieval-Augmented Generation) 檢索增強生成，能幫助 LLM 生成回答前，先從資料庫中檢索相關資訊，再進行回答，能有效幫助AI減少幻覺
+更新：2026-10（Claude Code 2.1.28x）。工具變得快，這份只留目前還成立的原則；版本相關的細節看官方 changelog。
+
+## CLAUDE.md
+
+1. 只放**導航指標**與**重複出現的失敗模式**，不放代碼規範、技術棧、禁止清單。每一行都常駐 context，行數越多每行的權重越低。
+2. AI 犯錯時先分類，再決定放哪：
+   - 可機械判定（格式、檔案位置、禁用 API）→ hook 或 lint，不寫規則
+   - 需判斷（職責劃分、錯誤有沒有真的被處理）→ `CODING_STANDARDS.md`，只給 review 階段讀
+   - 都不是 → 丟掉
+3. 新專案可以先不寫 CLAUDE.md，等失敗模式出現再加。換模型時重審一次，用 `/doctor prompt-audit` 找為舊模型寫的 prompt。
+4. 記憶由 Claude Code 自己管（auto-memory + Auto Dream 整理），不再手寫 MEMORY.md。`/memory` 看狀態；整理後看 diff，不看整理後的檔案。
+
+## 流程
+
+5. 寫碼前先把需求問清楚：要求 AI 只問不答，每題給選項；決策是人的事，查事實是 AI 的事。前面省的時間會在「不是這樣，重做」付回來。
+6. 大任務用 Plan Mode 先出計畫再動手。要求 AI 在做完後列出**考慮過但沒做的方案**（implementation notes），人審的是那張清單，不是整份 diff。
+7. 寫碼與審查分開：實作 agent 不讀 coding standard，review agent 才讀。可再用另一個模型做對抗式審查（「這是同事寫的，找出漏洞」）。
+8. 不同任務開新對話或 `/clear`：開發、除錯、review 各自一個 context。Session 之間用 worktree 隔離。
+9. 要求測試，但要指定方法：property-based、deterministic simulation、oracle 重放。AI 寫測試會偷懶，只驗「沒有 throw」的測試不算。
+
+## 自動化
+
+10. 有明確完成條件的任務才交給 loop：`/goal` 設判準、`/background` 脫離終端跑、`/loop` 定時重跑。沒有可機械判定的「完成」就不要 loop。
+11. 長時間自主跑的四件套：計畫寫在 CLAUDE.md、`CHANGELOG.md` 記進度與**失敗過的方法**、test oracle 放在 AI 寫不到的地方、每個單位 commit。早上看 git log 和 CHANGELOG，不看最終檔案。
+12. `/advisor` 讓 Claude 在關鍵時刻諮詢更強的模型，同 session 自動呼叫，不用另開。
+
+## 擴充
+
+13. **Skill**：完成一次複雜任務後說「把剛才的操作存成 skill」。細節放 `reference/`，要執行的放 `scripts/`，SKILL.md 本身保持短。寫 description 的只有在需要 AI 自己觸發時才寫，否則用 `disable-model-invocation: true` 省 context。
+14. **Hook**：事件驅動的 shell / script，用來擋、放行、記錄。格式化、commit 前跑測試都放這裡。
+15. **Mod**：在 Claude Code 程序內跑的 JS/TS，能改 tool call、畫 UI、保有狀態。比 hook 強，但沒有沙箱、用你的權限跑，裝之前先 `claude plugin validate`。
+16. **MCP**：接外部系統（issue tracker、Notion、telegram 回報）。
+17. **Plugin**：以上全部打包的安裝單位。Customize 頁裝的綁帳號、會同步到 Claude Code；命令列裝的只在那台機器。chat 端只載入 skills，hooks / agents / mods 只在 Claude Code 與 Cowork 生效。
+18. Skill 有沒有效可以測：`claude plugin eval` 做 no-skill baseline 對照。沒測過的 skill 不知道是加分還是扣分。
 
 ## 參考資料
 
-- [那些 Agent 神文没告诉你的事：照着做，系统只会更烂 【AI agent 搭建实操指南】](https://youtu.be/b_9D7T0n4RA?list=TLGGtH-HmxCStmIyMDAyMjAyNg)
-- [Claude Code's Creator Does This Before Every Single Project](https://youtu.be/B-UXpneKw6M?list=TLGGyrZG6_oOcgMyMDAyMjAyNg)
-- [everything-claude-code](https://github.com/affaan-m/everything-claude-code?tab=readme-ov-file)
+- [Thariq Shihipar on Latent Space（Claude Code 團隊，2026-09）](https://www.latent.space/p/thariq) — CLAUDE.md 越少越好、mods、implementation notes
+- [Long-running Claude](https://www.anthropic.com/research/long-running-Claude) — CLAUDE.md + CHANGELOG + oracle + git 四件套
+- [mattpocock/skills](https://github.com/mattpocock/skills) — grilling、retro、review 讀 standard 的分工
+- [Claude Code docs: Mods](https://code.claude.com/docs/en/plugins/mods/overview)
+- [Plugin feature support across platforms](https://claude.com/docs/plugins/platform-support)
+- [那些 Agent 神文没告诉你的事](https://youtu.be/b_9D7T0n4RA)
+- [Claude Code's Creator Does This Before Every Single Project](https://youtu.be/B-UXpneKw6M)
